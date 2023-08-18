@@ -114,8 +114,6 @@ class Execution(object):
         if self.msg:
             print_msg(self.msg, self.force_msg)
 
-def teste():
-    print('passou')
 
 def now_tag(tag):
    """Tags a given cell"""
@@ -157,7 +155,6 @@ class NotebookQuerierOptions(QuerierOptions):
         self.level = level
     
     def visit_arrow(self, context, neighbor):
-                
         # keeping 
         if neighbor.evaluation.code_component.type == 'function_def':
             body_function_def.append(int(neighbor.evaluation.code_component.id))
@@ -184,6 +181,8 @@ class NotebookQuerierOptions(QuerierOptions):
         
         dep_dict = {i[0] : i[1] for i in enumerate(self.dep_list)}
         return dep_dict
+ 
+ 
     
 def get_pre(var_name, glanularity = False):
     from noworkflow.now.persistence.models import Evaluation
@@ -199,25 +198,11 @@ def get_pre(var_name, glanularity = False):
     trial_id =  tagged_var_dict[var_name][3]
     evals = Evaluation((trial_id, evaluation_id))
     
-    nbOptions = NotebookQuerierOptions(level = glanularity)
+    nbOptions = NotebookQuerierOptions(level=glanularity)
     querier = DependencyQuerier(options=nbOptions)
     _, _, _ = querier.navigate_dependencies([evals])  
     
     return nbOptions.predecessors_output()   
-
-def exp_compare(trial_a, trial_b):
-    import shelve
-    
-    # Retrieve the dictionary a from the shelve file
-    with shelve.open('ops') as shelf:
-        dict_a = shelf['dict_a']
-        print("Retrieved dictionary:", dict_a)
-        dict_b = shelf['dict_b']
-        print("Retrieved dictionary:", dict_b)
-        
-    # comparing two dicts
-    
-    return dict_a == dict_b
 
 def store_operations(trial, ops_dict):
     import shelve
@@ -242,7 +227,6 @@ def exp_compare(trial_a, trial_b):
     else:
         print(f"Pipelines A and B differ in lenght")
 
-
     # comparing two dicts
     common_keys = set(dict1.keys()) & set(dict2.keys())
     indices_to_compare = [2, 3]
@@ -260,3 +244,17 @@ def exp_compare(trial_a, trial_b):
         else:
             print(f"Key '{key}': Values are different")
             print("->>>", values1[2:4], values2[2:4])
+
+    def get_pre_tagged(glanularity = False):
+        #from noworkflow.now.persistence.models.stage_tags import *
+        from noworkflow.now.persistence import relational
+        from noworkflow.now.persistence.models.base import proxy_gen
+
+        dict_tags = []
+
+        tagged_values = list(proxy_gen(relational.session.query(StageTags.m).filter(StageTags.m.trial_id == __noworkflow__.trial_id)))
+        
+        for var in tagged_values:
+            dict_tags[var.name] = get_pre(var.name)
+            
+        return dict_tags
