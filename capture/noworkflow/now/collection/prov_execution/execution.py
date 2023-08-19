@@ -143,7 +143,17 @@ class NotebookQuerierOptions(QuerierOptions):
     global body_function_def
     dep_list = []
     
+    
+    def __init__(self, level, *args, **kwargs):
+        QuerierOptions.__init__(self, *args, **kwargs) # change it to super when integrating in the main code
+        self.level = level
+    
     def visit_arrow(self, context, neighbor):
+        print('context', context.evaluation.code_component)
+        print('nieghbor', neighbor.evaluation.code_component)
+    
+    def visit_arrow_backward(self, context, neighbor):
+                
         # keeping 
         if neighbor.evaluation.code_component.type == 'function_def':
             body_function_def.append(int(neighbor.evaluation.code_component.id))
@@ -153,14 +163,15 @@ class NotebookQuerierOptions(QuerierOptions):
         
         context_code_comp = context.evaluation.code_component
         neighbor_code_comp = neighbor.evaluation.code_component
-    
+           
         if neighbor.arrow not in arrow_list:
             if context_code_comp.type not in type_list:
                 if neighbor_code_comp.type not in type_list:
                     if not (neighbor.arrow == 'use' and context_code_comp.type == 'call'):
                         if (neighbor_code_comp.container_id != None):
-                            if neighbor_code_comp.container_id not in body_function_def:
+                            if (neighbor_code_comp.container_id not in body_function_def) or self.level:
                                 self.dep_list.append((str(context.evaluation.checkpoint), str(context.evaluation.id), context_code_comp.name, context.evaluation.repr))
+
 
     def predecessors_output(self):
         global dep_dict
