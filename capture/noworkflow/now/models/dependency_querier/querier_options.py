@@ -13,9 +13,13 @@ class QuerierOptions(object):
         self.visit_members = visit_members
         self.visit_out = visit_out
 
-    def dependencies(self, evaluation):
+    def dependencies_backward(self, evaluation):
         """Get evaluation dependencies"""
         return evaluation.dependencies_as_dependent
+    
+    def dependencies_forward(self, evaluation):
+        """Get evaluation dependencies"""
+        return evaluation.dependencies_as_dependency
 
     def member_container(self, evaluation):
         """Get original evaluation container"""

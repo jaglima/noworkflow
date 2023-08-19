@@ -5,6 +5,7 @@
 
 from .querier_options import QuerierOptions
 from .node_context import NodeContext
+import ipdb
 
 class DependencyQuerier(object):
 
@@ -16,16 +17,17 @@ class DependencyQuerier(object):
         self.options.reset_arrows()    
         nodes_to_visit = []
         visited = visited or set()
+        #ipdb.set_trace()
         for evaluation in initial_evaluations:
             context = NodeContext(evaluation, None, options=self.options)
             if context not in visited:
                 nodes_to_visit.append(context)
                 visited.add(self.options.visit_context(context))
-
+        #ipdb.set_trace()
         found = set()
         while nodes_to_visit:
             context = nodes_to_visit.pop()
-            for neighbor in context.dependencies():
+            for neighbor in context.dependencies_forward():
                 if neighbor not in visited:
                     self.options.visit_arrow(context, neighbor)
                     visited.add(self.options.visit_context(neighbor))

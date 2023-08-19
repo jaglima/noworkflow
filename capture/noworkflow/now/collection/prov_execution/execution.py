@@ -24,6 +24,7 @@ from noworkflow.now.persistence.models import Evaluation, Activation
 from noworkflow.now.models.dependency_querier import DependencyQuerier
 from noworkflow.now.models.dependency_querier.node_context import NodeContext
 from noworkflow.now.models.dependency_querier.querier_options import QuerierOptions
+import ipdb
 
 # TODO: unsure if it is a good practice keep it here
 # as a global variable
@@ -129,7 +130,7 @@ def now_variable(var_name, value):
    trial_id = dep_evaluation.trial_id
    name = str(var_name)
    activation_id = dep_evaluation.activation_id
-   value = dep_evaluation.repr
+   value = value
    
    print(dep_evaluation)
     
@@ -143,7 +144,6 @@ class NotebookQuerierOptions(QuerierOptions):
     dep_list = []
     
     def visit_arrow(self, context, neighbor):
-                
         # keeping 
         if neighbor.evaluation.code_component.type == 'function_def':
             body_function_def.append(int(neighbor.evaluation.code_component.id))
