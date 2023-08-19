@@ -29,7 +29,7 @@ class DependencyQuerier(object):
             context = nodes_to_visit.pop()
             for neighbor in context.dependencies_forward():
                 if neighbor not in visited:
-                    self.options.visit_arrow(context, neighbor)
+                    self.options.visit_arrow_forward(context, neighbor)
                     visited.add(self.options.visit_context(neighbor))
                     nodes_to_visit.append(neighbor)
                     if stop_on and neighbor.evaluation in stop_on:

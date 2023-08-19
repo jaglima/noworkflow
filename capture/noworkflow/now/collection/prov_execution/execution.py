@@ -148,7 +148,7 @@ class NotebookQuerierOptions(QuerierOptions):
         QuerierOptions.__init__(self, *args, **kwargs) # change it to super when integrating in the main code
         self.level = level
     
-    def visit_arrow(self, context, neighbor):
+    def visit_arrow_forward(self, context, neighbor):
         print('context', context.evaluation.code_component)
         print('nieghbor', neighbor.evaluation.code_component)
     
